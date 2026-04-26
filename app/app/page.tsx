@@ -1,66 +1,70 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '32px',
+        padding: '32px',
+      }}
+    >
+      <ThemeToggle />
+
+      <h1>
+        Design system <em>check</em>
+      </h1>
+
+      <p style={{ color: 'var(--ink-muted)', maxWidth: '480px', textAlign: 'center' }}>
+        Body text in Inter. The heading above is Instrument Serif with a copper italic accent.
+      </p>
+
+      <p className="mono" style={{ fontSize: '13px', color: 'var(--ink-soft)', letterSpacing: '0.04em' }}>
+        JetBrains Mono — labels, tags, dates, code
+      </p>
+
+      <button
+        style={{
+          fontFamily: 'var(--font-jetbrains-mono)',
+          fontSize: '13px',
+          letterSpacing: '0.04em',
+          padding: '14px 24px',
+          borderRadius: '999px',
+          border: '2px solid var(--accent)',
+          background: 'transparent',
+          color: 'var(--accent)',
+          cursor: 'pointer',
+        }}
+      >
+        copper_border_button
+      </button>
+
+      <div
+        style={{
+          display: 'flex',
+          gap: '16px',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}
+      >
+        {['--bg', '--bg-elev', '--accent', '--ink', '--border'].map((token) => (
+          <div
+            key={token}
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '8px',
+              background: `var(${token})`,
+              border: '1px solid var(--border-strong)',
+            }}
+            title={token}
+          />
+        ))}
+      </div>
     </div>
-  );
+  )
 }
