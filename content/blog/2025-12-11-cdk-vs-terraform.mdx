@@ -1,0 +1,30 @@
+---
+title: "CDK vs Terraform: A Pragmatic Decision Framework"
+slug: "cdk-vs-terraform"
+date: "2025-12-11"
+tags: ["aws", "practices"]
+thesis: "Skip the religious war. The right answer depends on your team's language, blast radius, and audit story."
+description: "CDK vs Terraform for AWS infrastructure — a pragmatic framework that cuts through the dogma."
+---
+
+The CDK vs Terraform debate generates more heat than light. Both tools can provision the same infrastructure. The choice is about team experience, blast radius, and what your compliance team needs to audit.
+
+CDK's main strength is that it's real code. A TypeScript CDK construct is a typed function that can be tested with Jest, documented with JSDoc, and refactored with your IDE. When your infrastructure follows the same patterns as your application code — shared types, shared abstractions — the cognitive overhead is lower for a team that already writes TypeScript or Python.
+
+Terraform's main strength is predictability. The `plan` output is explicit, diffable, and reviewable by people who don't write code. HCL is limited by design — you can't write a recursive module or abstract away too much, which means infrastructure usually looks the same across environments. For regulated industries where audit trails and change reviews are required, Terraform's explicit state and plan model is easier to document.
+
+## Where CDK wins
+
+CDK shines on greenfield AWS-native projects where the team writes TypeScript or Java and doesn't need to manage multi-cloud. The L2 and L3 constructs encode AWS best practices — using `aws_cdk.aws_lambda.Function` creates the execution role, the log group, and sets sensible defaults in one call. The productivity gain on an AWS-first project is real.
+
+CDK also wins when you need complex conditional logic in your infrastructure — feature flagging infrastructure, per-environment customization, generating resources from arrays of configuration. HCL can do this but the code becomes hard to read quickly.
+
+## Where Terraform wins
+
+Terraform wins when you have multi-cloud requirements, when you need to integrate with existing Terraform modules from the registry, or when your change management process requires infrastructure diffs to be reviewed by non-engineers. The `tfplan` artifact is a first-class citizen in regulated environments.
+
+It also wins when you're joining an existing Terraform codebase. The switching cost from established Terraform to CDK is high; the reverse is also true.
+
+## The pragmatic rule
+
+If your team writes TypeScript, Java, or Python and you're AWS-only — CDK. If you're multi-cloud, have non-engineer reviewers, or are joining an existing Terraform organization — Terraform. If you're starting fresh with no constraint, learn CDK: the AWS-native abstractions will save you more time than you'll spend learning the tool.

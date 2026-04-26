@@ -1,0 +1,36 @@
+---
+title: "Why I Choose Kotlin Over Java for New Backend Projects in 2026"
+slug: "kotlin-over-java-2026"
+date: "2026-01-20"
+tags: ["kotlin", "architecture"]
+thesis: "Six concrete language features that change how you architect Spring Boot services — without sacrificing JVM compatibility."
+description: "Why Kotlin consistently outperforms Java for new Spring Boot and Lambda projects — the concrete language features that matter in production."
+---
+
+Modern AWS backends spend most of their lives in Lambda functions and Spring Boot services. Kotlin's concision cuts the boilerplate dramatically — a data class that needs five lines in Kotlin needs fifty in Java once you add the constructor, getters, equals, hashCode, and toString.
+
+But concision isn't the main argument. Null safety is.
+
+The Kotlin compiler forces you to decide at every call site whether a value can be absent. On AWS, where half your inputs arrive as JSON payloads from SQS or API Gateway, that discipline catches entire classes of NullPointerException at compile time rather than 3 AM.
+
+## The six features that change architecture
+
+**Data classes** remove the boilerplate that normally obscures domain models. When a `LeadCapturedEvent` is four lines instead of fifty, you create more of them, you name them better, and you use them correctly.
+
+**Sealed classes** model exhaustive state machines. A `PaymentStatus` sealed class with `Pending`, `Completed`, and `Failed` subclasses forces every `when` expression to handle all states — the compiler tells you at build time when you've missed a case.
+
+**Extension functions** let you add methods to existing types without inheritance. This is particularly valuable when wrapping AWS SDK clients: add a `suspend fun SqsClient.sendBatch(...)` extension and your callers never touch the raw client.
+
+**Coroutines** are the Kotlin-native answer to async programming. On Lambda, where you're often waiting on DynamoDB or downstream HTTP calls, structured concurrency with `async`/`await` is cleaner than CompletableFuture chains.
+
+**Inline functions with reified generics** let you write type-safe deserialization helpers: `inline fun <reified T> String.fromJson(): T = objectMapper.readValue(this)`. One line of library code eliminates a class of runtime errors.
+
+**The stdlib** — `let`, `apply`, `also`, `run` — gives you scoping primitives that make initialization sequences readable without intermediate variables.
+
+## The compatibility argument
+
+The migration path is gentle. Kotlin and Java interoperate cleanly on the same JVM, so you can introduce it one module at a time without a flag day. I typically start with the Lambda handlers — they're small, isolated, and the place where null-safety pays off fastest.
+
+Spring Boot has first-class Kotlin support. The Spring team ships Kotlin DSL extensions for web, Security, and TestContext. Coroutines work with Spring's reactive stack. You're not fighting the framework.
+
+The one real cost: build times on large modules are slower than Java, and the Kotlin compiler has more options to configure. Budget 10–20% extra CI time for Kotlin-heavy services and it stops feeling like a trade-off.

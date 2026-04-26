@@ -1,0 +1,26 @@
+---
+title: "Event-Driven Architecture on AWS: SNS, SQS, EventBridge Compared"
+slug: "event-driven-aws"
+date: "2026-02-06"
+tags: ["aws", "architecture"]
+thesis: "When each service is the right answer — and the costly default most teams reach for first."
+description: "SNS, SQS, and EventBridge on AWS compared — when to use each and the trade-offs teams get wrong."
+---
+
+Most teams building event-driven systems on AWS default to SQS for everything. It's well-understood, it's durable, and it works. But SQS is a queue, not an event bus — and the distinction matters once your architecture has more than two services communicating.
+
+SQS is the right tool when you need reliable work distribution: one producer, one or a small set of consumers, point-to-point delivery with at-least-once guarantees. A Lambda function draining a queue of image processing jobs is the canonical use case. The visibility timeout, dead-letter queue, and message retention are all designed for exactly this pattern.
+
+SNS is a fan-out mechanism. One message published to a topic is delivered to N subscribers simultaneously. The classic pattern is SNS → multiple SQS queues, where each downstream service gets its own queue and processes at its own pace. The coupling is reduced: the producer doesn't know who's subscribed, and adding a new consumer doesn't require changes to the producer.
+
+## Where EventBridge fits
+
+EventBridge is the odd one out. It's not a queue, not a simple pub/sub — it's a fully managed event bus with a schema registry, content-based routing, and native integrations with 200+ AWS services and SaaS providers. Its killer feature is the event rule: a filter expression that routes events to targets based on content, not just topic.
+
+Use EventBridge when you're building within a domain that already uses AWS service events (CloudTrail, CodePipeline, S3 object events), or when you need fine-grained routing without building it yourself. The 24-hour default event retention and at-least-once delivery make it unsuitable as a pure queue replacement.
+
+The cost model matters too: EventBridge charges per event, while SQS charges per request. At high volume, SQS with SNS fan-out is cheaper than EventBridge. At low volume with complex routing, EventBridge wins on simplicity.
+
+## The pattern that works
+
+For most microservice architectures: SQS for point-to-point work queues, SNS → SQS for fan-out, EventBridge for cross-service domain events where content-based routing would otherwise require multiple topics. You don't have to pick one — the services compose.

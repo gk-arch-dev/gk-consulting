@@ -1,0 +1,29 @@
+---
+title: "Medtech Patient Records Platform Rebuild"
+slug: "medtech-platform-rebuild"
+year: 2021
+engagement: "embedded"
+industry: "Medtech · EU"
+role: "Embedded Tech Lead"
+duration: "14 months"
+team: "6 engineers"
+tag: "Embedded Tech Lead · Medtech · EU"
+thesis: "Embedded as tech lead with a six-engineer team to rebuild a regulated patient records platform — GDPR and medical-device-grade audit, microservices on AWS, modern frontend."
+outcomeMetric: "6"
+outcomeLabel: "engineers led · regulated production launch"
+stack: ["Java 11", "Spring Cloud", "Spring Security", "AWS", "PostgreSQL", "React", "TypeScript", "Docker", "Terraform", "ECS", "RDS"]
+metrics:
+  - num: "6"
+    label: "engineers led through a regulated platform launch"
+  - num: "100%"
+    label: "GDPR and medical-device audit trail coverage at launch"
+  - num: "14 months"
+    label: "from greenfield commit to production with zero major defects"
+description: "Embedded tech lead engagement for a medtech company rebuilding their patient records platform under GDPR and medical-device regulation on AWS."
+---
+
+The client is a European medtech company that builds software for patient data management in clinical settings. Their existing records platform had been built by a small team over several years and had reached the limits of its maintainability — the audit trail was incomplete for regulatory purposes, the architecture was a monolith that made GDPR data-subject requests slow and error-prone, and the frontend was impossible to evolve without deep backend changes.
+
+I joined as embedded tech lead with a team of six engineers. The rebuild followed a domain-driven microservices approach: a patient identity service, a records service, an audit service with immutable event storage, and a GDPR compliance service that handled data subject requests (access, correction, deletion) as first-class domain operations. All services ran on ECS on AWS with RDS PostgreSQL. Infrastructure was in Terraform. The React TypeScript frontend was designed from the start to be independent of any single backend service.
+
+The platform launched fourteen months after the first commit with full medical-device-grade audit trail coverage and zero major production defects. *The hardest architectural decision*: representing deletion as a domain event rather than a database DELETE — the GDPR right-to-be-forgotten required that we could demonstrate erasure without losing the audit record of the erasure request. This required a custom audit event model that the regulatory reviewers eventually accepted after one revision cycle.

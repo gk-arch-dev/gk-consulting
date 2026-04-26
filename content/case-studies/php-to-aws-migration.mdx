@@ -1,0 +1,30 @@
+---
+title: "Legacy PHP Monolith → Cloud-Native on AWS"
+slug: "php-to-aws-migration"
+year: 2024
+engagement: "modernization"
+industry: "Real Estate · DE"
+role: "Architecture & Delivery Lead"
+duration: "18 months"
+team: "5 engineers"
+tag: "Legacy Modernization · Real Estate · DE"
+thesis: "Eighteen months. Two hundred thousand active users. A decade of accumulated PHP debt, modernized into a Kotlin platform on AWS without a single missed product release."
+outcomeMetric: "200K+"
+outcomeLabel: "users migrated · zero downtime"
+stack: ["Kotlin", "Java 17", "Spring Boot", "React", "TypeScript", "PostgreSQL", "DynamoDB", "AWS Lambda", "API Gateway", "ECS Fargate", "SQS · SNS", "CDK", "Docker", "Jenkins"]
+metrics:
+  - num: "200K+"
+    label: "active users migrated without service interruption"
+  - num: "0 minutes"
+    label: "of unplanned downtime during the cutover window"
+  - num: "~40%"
+    label: "reduction in monthly infrastructure spend"
+closingQuote: "A decade of accumulated PHP debt — paid down in eighteen months without missing a release."
+description: "An 18-month migration of a 200K-user PHP monolith to a Kotlin & Spring Boot platform on AWS for a German real estate company."
+---
+
+The client runs one of Germany's larger lead-generation platforms in the moving-and-relocation space. The product was profitable, but the codebase — a PHP monolith built up over roughly a decade — had become a hiring problem and a delivery problem. The 40-minute deploy pipeline, the cross-team coordination needed for any real change, and the dread around on-call rotations were all pointing to the same conclusion: **modernize, but without freezing the roadmap**.
+
+I led the migration as Tech Lead with a team of five. We adopted the Strangler Fig pattern — keeping the PHP monolith in production while carving out bounded contexts as Kotlin services on AWS, one at a time. Two architectural decisions shaped everything else: **Kotlin over Java** (the team wanted something modern, and the JVM kept everything compatible), and **event-driven seams over shared databases** (legacy and new services exchanged state via SQS and SNS, never direct writes — this is what made incremental migration safe).
+
+Six bounded contexts migrated over eighteen months, ending in a zero-downtime cutover. The platform now runs on a serverless-first architecture (Lambda, DynamoDB, ECS Fargate) with infrastructure managed in CDK. The team grew, the deploy pipeline shrank from 40 minutes to under 8, and the on-call rotation stopped being a punishment. *One honest note in retrospect*: I'd build observability in from day one next time. We retrofitted distributed tracing and structured logging in month four — work that would have taken half the time if we'd done it earlier.

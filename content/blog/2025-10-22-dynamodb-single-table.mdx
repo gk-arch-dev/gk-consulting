@@ -1,0 +1,26 @@
+---
+title: "Single-Table DynamoDB Design Without the Cult"
+slug: "dynamodb-single-table"
+date: "2025-10-22"
+tags: ["architecture", "aws"]
+thesis: "When the single-table pattern earns its complexity — and the three signs you should split instead."
+description: "A pragmatic take on single-table DynamoDB design — when it's worth the complexity and when it isn't."
+---
+
+Single-table DynamoDB design has a zealous following. The argument is sound: if you co-locate all your access patterns in one table, you get the lowest latency, the simplest capacity planning, and the cheapest bill. The problem is that the argument is often applied indiscriminately to workloads that don't need it.
+
+The single-table pattern earns its complexity when: your primary access patterns are known and stable, your relationships are hierarchical (a user has many orders, an order has many items), and your team is willing to invest in understanding the key design upfront. Done well, a single-table design is fast, cheap, and maintainable.
+
+It doesn't earn the complexity when your access patterns evolve frequently, when your data model is genuinely relational (many-to-many without a clear hierarchy), or when your team doesn't have the DynamoDB expertise to maintain it. In those cases, you're paying the complexity tax upfront for an optimization that may not matter at your scale.
+
+## The three signs to split
+
+**New access patterns keep forcing GSI proliferation.** If you're adding a GSI every quarter to support a new query shape, your access patterns aren't stable enough for the single-table assumption. Each GSI adds cost and replication lag — at some point, you're building a poor man's secondary index system that a relational database would handle natively.
+
+**Your entities have genuinely different consistency requirements.** Single-table design assumes that co-located data can share a table's provisioned capacity and partition key. If one entity type is read-heavy and another is write-heavy, and they share partition keys, you'll hit hot partition issues that are harder to solve than just running two tables.
+
+**Onboarding new engineers takes more than a day to explain the key schema.** This is the honest complexity test. If you can't explain your PK/SK design to a competent engineer in under an hour, the design is too clever. DynamoDB is already unfamiliar to most engineers coming from relational databases — layering a complex single-table key design on top makes it worse.
+
+## The pragmatic middle ground
+
+Use single-table design for the access patterns that genuinely benefit: hierarchical entities that are always accessed together, high-throughput patterns where consistent partition distribution matters. Use separate tables for reporting models, infrequent queries, and entities with different access shapes. The DynamoDB data model doesn't require single-table purity — it rewards good key design, wherever that design lives.

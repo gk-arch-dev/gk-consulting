@@ -1,0 +1,28 @@
+---
+title: "API Gateway Authorization: JWT, IAM, or Lambda Authorizer?"
+slug: "api-gateway-authorization"
+date: "2026-02-24"
+tags: ["aws", "architecture"]
+thesis: "Three patterns, three blast radii. A decision framework based on what you're actually protecting."
+description: "Choosing between JWT, IAM, and Lambda Authorizer for API Gateway — a practical decision framework from production."
+---
+
+API Gateway gives you three authorization models: JWT authorizers, IAM authorization, and Lambda authorizers. Most teams pick one based on what the tutorial used. The right choice depends on who is calling, what they're calling, and how much blast radius you're willing to accept.
+
+JWT authorizers integrate directly with Amazon Cognito or any OIDC-compatible identity provider. They're the fastest to set up and the right default for customer-facing APIs where users authenticate via a web or mobile client. The limitation is that you get token validation and claims extraction but no custom logic — if you need to check permissions against a database, you're looking at Lambda.
+
+Lambda authorizers are the escape hatch. A small Lambda function receives the token (or header, or query parameter) and returns an IAM policy document saying what the caller is allowed to do. This flexibility comes with latency cost — even with caching enabled, a cold Lambda authorizer adds 50–150ms to the first request in a window. For latency-sensitive paths, that cost matters.
+
+## When IAM authorization wins
+
+IAM authorization is underused in microservice architectures. When service A calls service B inside your VPC, there's no user token involved — only a service identity. IAM auth (with SigV4 request signing) lets you use the same IAM role-based permission model you use everywhere else in AWS.
+
+The cognitive overhead is low if your team already lives in IAM. The signing is handled transparently by the AWS SDK. And the audit trail goes straight into CloudTrail alongside your other resource access events.
+
+The catch: IAM auth is awkward for cross-account or external-caller scenarios where you'd need to manage cross-account roles. In those cases, a Lambda authorizer with API key validation (for M2M clients) or JWT validation (for users) is usually cleaner.
+
+## Making the decision
+
+Start with the question: who is calling this endpoint? If it's a human user authenticated through an IdP — JWT. If it's another AWS service inside your account — IAM. If it's an external system with an API key, a third-party OAuth token, or custom claims logic — Lambda authorizer.
+
+The second question: how often does authorization fail and how badly? A misconfigured Lambda authorizer that returns `Deny` on everything will silently block all traffic. JWT authorizers fail loudly at token validation. Budget time to test authorization failures as carefully as you test authorization successes.

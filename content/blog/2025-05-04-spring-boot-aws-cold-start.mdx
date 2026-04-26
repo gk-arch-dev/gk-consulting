@@ -1,0 +1,28 @@
+---
+title: "Spring Boot on Lambda: Yes, Even With Cold Starts"
+slug: "spring-boot-aws-cold-start"
+date: "2025-05-04"
+tags: ["kotlin", "serverless"]
+thesis: "When the JVM ecosystem outweighs the boot time, and the four config tweaks that get you under 800ms."
+description: "How to run Spring Boot on AWS Lambda with cold starts under 800ms — the four configuration changes that actually work."
+---
+
+The conventional wisdom is that Spring Boot and Lambda don't mix. Spring's startup time, the JVM warmup cost, and Lambda's cold start sensitivity make a bad combination on paper. In practice, the JVM ecosystem — the libraries, the tooling, the existing team expertise — often outweighs the boot time cost. Here's how to make it work.
+
+The baseline for a Spring Boot Lambda with a modest dependency set is 3–5 second cold starts. With SnapStart enabled and the configuration changes below, that drops to 600–900ms. For asynchronous Lambda invocations (SQS, EventBridge) or APIs with relaxed latency requirements, this is acceptable.
+
+## The four configuration changes
+
+**1. Spring Boot lazy initialization.** Add `spring.main.lazy-initialization=true` to your application.properties. This defers bean initialization until first use, cutting startup time by 30–50% on typical projects. The trade-off: the first request that touches a lazy-initialized bean takes longer. For Lambda, this is usually fine because the first real request happens after the cold start anyway.
+
+**2. Minimal classpath scanning.** Disable component scanning for packages you don't use. By default, Spring scans your entire classpath for annotations. Use `@SpringBootApplication(scanBasePackages = {"com.example.yourapp"})` to scope it. This alone can cut startup time by 20% on projects with large dependencies.
+
+**3. GraalVM Native Image.** If you can accept a longer build time, GraalVM native compilation produces a Lambda executable that starts in under 100ms. The cost: build times of 5–15 minutes, AOT compilation that's incompatible with some reflection-heavy Spring features, and a narrower ecosystem. For greenfield services with simple dependency graphs, it's worth evaluating.
+
+**4. AWS Lambda SnapStart.** Enable SnapStart on your Java 21+ Lambda. AWS takes a snapshot of the initialized Lambda execution environment and restores from it on cold starts, bypassing the JVM initialization entirely. The restored snapshot is warm — your beans are initialized, your connections are established. Effective cold start time drops to 200–600ms.
+
+## When to choose something else
+
+If your Lambda is on a hot synchronous API path with a 200ms p99 SLA, Spring Boot won't get you there even with all of these optimizations. Consider Quarkus (which has better native compilation support), Micronaut (designed for cold-start performance), or a Node.js/TypeScript Lambda for truly latency-critical paths.
+
+For everything else — SQS consumers, scheduled jobs, async processors, and APIs that can tolerate occasional 600ms cold starts — Spring Boot on Lambda with SnapStart is a legitimate production choice.

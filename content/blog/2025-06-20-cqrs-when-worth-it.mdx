@@ -1,0 +1,28 @@
+---
+title: "CQRS Is Not a Silver Bullet"
+slug: "cqrs-when-worth-it"
+date: "2025-06-20"
+tags: ["architecture", "modernization"]
+thesis: "The two read patterns that actually need it, and the dozen that don't — with code from a real migration."
+description: "When CQRS is genuinely worth the complexity — the two patterns that justify it and the twelve that don't."
+---
+
+CQRS is one of those patterns that architects love to recommend and teams love to implement until they're maintaining twice the code for problems that didn't need it.
+
+The Command Query Responsibility Segregation pattern separates your write model (commands that change state) from your read model (queries that return data). In theory, this gives you independent scalability, optimized read projections, and a clean separation of concerns. In practice, it gives you eventual consistency, dual write paths, and the need to rebuild projections when your read model changes.
+
+The pattern earns its complexity in exactly two scenarios.
+
+## Scenario 1: Read and write models have fundamentally different shapes
+
+If your write operations work on normalized, aggregate-rooted domain entities, and your read operations need to return flat, denormalized views across many entities — CQRS is justified. The classic example is an e-commerce order summary screen that shows order data, product data, customer data, and shipping data from four different aggregates in a single response. Maintaining a separate read model that projects this view from domain events is cleaner than joining across aggregates in the write path.
+
+## Scenario 2: Read and write operations have dramatically different scale requirements
+
+If your writes are rare and consistent (one order per customer per session) but your reads are frequent and cacheable (a product catalog viewed millions of times per day), CQRS lets you scale the read side independently. A read replica, a Redis cache layer, or a dedicated read service can serve the read load without touching the write database.
+
+## The twelve scenarios that don't need it
+
+Admin panels, internal tools, CRUD APIs, reporting dashboards, user profile management, settings pages, notification systems, audit logs, search results that can tolerate a round-trip to the write database, and any workload where the read and write models are essentially the same shape.
+
+For these, a single well-indexed relational database with a clean repository pattern is more maintainable than a CQRS stack with event projection, eventual consistency, and projection rebuilding. The complexity tax of CQRS is real. Only pay it when the problem actually demands the solution.

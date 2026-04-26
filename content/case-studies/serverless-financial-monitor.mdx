@@ -1,0 +1,29 @@
+---
+title: "Real-Time Financial Data Monitor"
+slug: "serverless-financial-monitor"
+year: 2022
+engagement: "greenfield"
+industry: "Fintech · EU"
+role: "Solo Architect & Builder"
+duration: "4 months"
+team: "Solo Delivery"
+tag: "Greenfield · Fintech · EU"
+thesis: "Solo delivery of a fully serverless monitoring system: Lambda backend, DynamoDB storage, CQRS read models, and infrastructure managed end-to-end with CDK."
+outcomeMetric: "< €200"
+outcomeLabel: "monthly infra · zero ops overhead"
+stack: ["React", "TypeScript", "AWS Lambda", "DynamoDB", "API Gateway", "EventBridge", "CDK", "CloudFront", "S3"]
+metrics:
+  - num: "< €200"
+    label: "monthly infrastructure cost at production traffic"
+  - num: "< 500ms"
+    label: "data refresh latency for active monitoring sessions"
+  - num: "0"
+    label: "ops incidents in the first six months after launch"
+description: "Solo delivery of a fully serverless real-time financial data monitoring platform for a European fintech — Lambda, DynamoDB, CDK, zero ops overhead."
+---
+
+The client needed a real-time monitoring dashboard for financial data feeds — price alerts, threshold notifications, and historical trend views. Budget was tight and the team had no dedicated infrastructure engineer. The brief was clear: build something that runs itself.
+
+I designed and built the system as a fully serverless stack: API Gateway and Lambda for the backend, DynamoDB for state storage with a CQRS pattern (write model for raw event ingestion, read model projected for the dashboard queries), EventBridge for scheduled polling of external data feeds, and a React TypeScript frontend hosted on CloudFront. Infrastructure was entirely in CDK — a single `cdk deploy` from zero to production.
+
+The system has run for over two years with no operational incidents requiring intervention. *The architectural decision that mattered most*: CQRS with separate read projections made the dashboard queries fast and cheap without requiring complex DynamoDB key design — the write model handles raw ingestion, the projections handle the display shapes. At the scale of this system, the eventual consistency lag (under 100ms) was invisible to users.

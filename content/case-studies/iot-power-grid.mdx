@@ -1,0 +1,29 @@
+---
+title: "IoT Management Platform for Power Grid"
+slug: "iot-power-grid"
+year: 2023
+engagement: "greenfield"
+industry: "Utilities · EU"
+role: "Backend Architect"
+duration: "12 months"
+team: "4 engineers"
+tag: "Greenfield · Utilities · EU"
+thesis: "Event-driven backend handling telemetry from thousands of field devices, with operator dashboards and alerting — designed and built from scratch in twelve months."
+outcomeMetric: "99.95%"
+outcomeLabel: "ingestion SLA · sub-second events"
+stack: ["Java 17", "Kafka", "Spring Boot", "Spring Cloud", "PostgreSQL", "TimescaleDB", "React", "Docker", "Kubernetes", "AWS"]
+metrics:
+  - num: "99.95%"
+    label: "ingestion SLA maintained across peak device activity"
+  - num: "< 1s"
+    label: "event-to-dashboard latency for operator alerting"
+  - num: "12k+"
+    label: "field devices under active management at launch"
+description: "Greenfield IoT platform for power grid device management — event-driven, sub-second telemetry processing for a European utilities operator."
+---
+
+The client operates power distribution infrastructure across several European countries and needed a platform to manage the IoT devices deployed across their grid: sensors, remote terminal units, and intelligent electronic devices reporting telemetry at variable frequencies. The existing monitoring was manual, fragmented, and unable to scale to the device count they were rolling out.
+
+I designed the backend architecture as a Kafka-backed event pipeline, with Java Spring Boot microservices handling ingestion, normalization, and alert evaluation. The key constraint was latency: operators needed alert notifications within one second of a device reading crossing a threshold. TimescaleDB handled the time-series telemetry storage, with a separate PostgreSQL database for device registry and configuration. A React frontend provided the operator dashboard.
+
+The platform launched on schedule with 99.95% ingestion SLA across the first three months. *The architectural decision I'm most satisfied with*: modeling device state as a stream of immutable events rather than a mutable record, which made the alert rule engine straightforward to build and the historical replay of device behaviour easy to implement for debugging.

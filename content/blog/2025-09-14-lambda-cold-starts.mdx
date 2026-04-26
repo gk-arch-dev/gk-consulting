@@ -1,0 +1,34 @@
+---
+title: "Lambda Cold Starts: What Actually Matters in 2025"
+slug: "lambda-cold-starts"
+date: "2025-09-14"
+tags: ["serverless", "aws"]
+thesis: "Provisioned concurrency, SnapStart, runtime choice — measured against real production workloads."
+description: "What the Lambda cold start numbers actually look like in production in 2025 — and when to pay for the fix."
+---
+
+Lambda cold starts are real, but their impact depends entirely on your runtime, workload shape, and latency budget. Here's what the numbers look like on real workloads in 2025.
+
+For Node.js and Python Lambdas with small packages, cold starts are 100–300ms. For Go and Rust, under 100ms. For JVM runtimes (Java, Kotlin) without SnapStart, 1–5 seconds depending on package size and initialization logic. With SnapStart, JVM cold starts drop to 200–600ms.
+
+## When cold starts matter
+
+Cold starts matter for **synchronous APIs** where users experience the latency directly. If you're building a customer-facing endpoint with a p99 SLA of 500ms, a 2-second Java cold start is a production incident.
+
+Cold starts don't matter for **asynchronous work**: SQS consumers, S3 triggers, EventBridge handlers. The latency is invisible to users, and the first invocation after a cold start adds milliseconds to a job that might run for seconds or minutes.
+
+They also don't matter much for **steady-state throughput**: a Lambda that receives 100 requests per second will have most requests hit warm instances. Cold starts become a rounding error.
+
+## The mitigation options
+
+**Provisioned concurrency** keeps N instances initialized and warm at all times. It eliminates cold starts for the provisioned capacity but adds a fixed hourly cost. The math works for predictable traffic patterns; it's wasteful for bursty or unpredictable workloads.
+
+**SnapStart** (Java only) snapshots the initialized Lambda and restores from the snapshot instead of re-initializing. This reduces JVM cold starts from 2–5 seconds to 200–600ms without the cost of provisioned concurrency. It's the best option for most Java/Kotlin Lambda use cases.
+
+**Runtime choice** is the most effective lever if you're starting from scratch. A Go or Rust Lambda has cold starts under 100ms. If your team doesn't write Go or Rust, TypeScript with esbuild bundling gets cold starts under 200ms. The cost is switching from the JVM ecosystem — worth it for latency-critical paths, not worth it for internal tooling.
+
+**Package optimization** matters more than most teams realize. A Java Lambda with a fat JAR including unused dependencies initializes 30–50% slower than a trimmed deployment. Using GraalVM native images or the CRaC framework can cut Java cold starts to sub-100ms, at the cost of build complexity.
+
+## The honest recommendation
+
+Profile before optimizing. Add Lambda duration metrics with cold start dimensions to your CloudWatch dashboard and look at the actual p95/p99 numbers for your workload. If they're within your SLA, you don't have a cold start problem — you have an optimization opportunity that might not be worth taking.

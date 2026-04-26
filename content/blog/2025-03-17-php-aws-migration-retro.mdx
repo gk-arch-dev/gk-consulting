@@ -1,0 +1,32 @@
+---
+title: "Notes from an Eighteen-Month PHP-to-AWS Migration"
+slug: "php-aws-migration-retro"
+date: "2025-03-17"
+tags: ["modernization", "practices"]
+thesis: "What worked, what didn't, and the architectural decisions I'd make differently next time."
+description: "A retrospective on an eighteen-month PHP monolith to AWS migration — the decisions that worked and the ones I'd revisit."
+---
+
+Eighteen months is a long time to work on a single migration. Long enough to watch your early architectural decisions compound — both the good ones and the bad ones.
+
+We were migrating a PHP monolith for a German real estate company: 200,000 active users, a decade of accumulated debt, a team that wanted modern tooling, and a business that couldn't afford a freeze. The Strangler Fig pattern. Kotlin on AWS. Event-driven seams between the old and new systems.
+
+Here's what I'd do the same and what I'd do differently.
+
+## What worked
+
+**Event-driven seams as the migration boundary.** The decision to use SQS and SNS as the interface between PHP and Kotlin — never direct database access across the boundary — was the right call. Every time we thought about taking a shortcut and sharing a database table, we didn't. That discipline is why we could migrate one bounded context at a time without the rest of the system knowing.
+
+**Kotlin over Java.** The team adapted faster than expected. The null-safety compiler errors were frustrating for the first two weeks and valuable for the next seventy-six. The data class and sealed class patterns made domain modeling cleaner than it would have been in Java.
+
+**Two-week planning cycles on the migration backlog.** We reviewed the dependency map and re-prioritized the extraction order every two weeks. Three times, we changed the sequence because the map had changed. If we'd planned the entire extraction sequence upfront, two of those pivots would have been expensive.
+
+## What I'd do differently
+
+**Observability on day one.** We added distributed tracing and structured logging in month four. The work took three weeks and would have taken three days at the start. The two months we spent debugging cross-service issues without traces are the clearest thing I'd change.
+
+**The identity service last, not sixth.** We extracted the authentication and identity service as the sixth bounded context (of eight), which felt right at the time — it's the riskiest. In retrospect, it should have been second or third. The identity service was deeply coupled to everything, and extracting it later meant we were managing three layers of backwards-compatibility code that had accumulated over the previous contexts.
+
+**More explicit cutover dates.** Each bounded context had a "migration complete" milestone, but we were loose about setting hard cutover dates for decommissioning the PHP side. Services lingered in parallel mode longer than they should have, adding operational overhead. A hard decommission date, with a rollback plan, forces a cleaner cutover.
+
+The migration shipped. The platform runs well. The retrospective list is shorter than I expected at the start.

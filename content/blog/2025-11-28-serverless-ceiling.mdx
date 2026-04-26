@@ -1,0 +1,34 @@
+---
+title: "The Serverless Ceiling: When to Reach for ECS Instead"
+slug: "serverless-ceiling"
+date: "2025-11-28"
+tags: ["serverless", "aws"]
+thesis: "The four signals that tell you Lambda is no longer the right tool — before your invoice does."
+description: "Four concrete signals that your Lambda workload has hit the serverless ceiling and needs ECS Fargate instead."
+---
+
+Lambda is the right default for most backend workloads. Scales to zero, no cluster management, pay-per-invocation pricing that looks great on a pitch deck. But Lambda has hard and soft ceilings, and teams that hit them often discover it too late — after the architecture is locked in.
+
+The four signals I watch for are: cold start sensitivity, memory ceiling, long-running work, and stateful connections.
+
+## Cold starts
+
+Lambda's cold start problem is real for latency-sensitive synchronous APIs. The JVM makes it worse: a Spring Boot Lambda can take 3–8 seconds to initialize on a cold start, even with SnapStart. If your p99 latency budget is under 500ms and you're seeing cold starts in production, you've hit the ceiling. Provisioned concurrency helps but adds a fixed cost that erodes the pay-per-invocation advantage.
+
+ECS Fargate tasks warm up once and stay warm. For always-on API traffic, a Fargate service at minimum 1 task is cheaper than provisioned Lambda once you account for the provisioned concurrency cost above a few hundred requests per minute.
+
+## Memory and CPU
+
+Lambda's memory ceiling is 10GB per function. That's generous for most workloads — but memory and CPU in Lambda are coupled (more memory = more vCPU). If you're running CPU-intensive work (ML inference, image processing, video transcoding), you can't trade memory for CPU. ECS lets you specify CPU and memory independently and run compute-optimized instances.
+
+## Long-running work
+
+Lambda has a 15-minute timeout. For most async work, that's enough. But data migration jobs, batch processing pipelines that can't be decomposed into sub-15-minute chunks, and long-running streaming operations will eventually bump against it. ECS tasks run until you stop them.
+
+## Stateful connections
+
+Lambda functions don't maintain connections between invocations. Connection pooling to RDS, Elasticsearch, or Redis is expensive at scale — each invocation re-establishes connections that a long-running service would reuse. RDS Proxy helps, but it's another moving part with its own limits. ECS services with a connection pool that persists across requests are simpler.
+
+## The hybrid pattern
+
+The pattern that works at scale: Lambda for event-driven and async work (SQS consumers, S3 triggers, scheduled jobs), ECS Fargate for synchronous APIs and services with stateful connections. Same CDK codebase, same deployment pipeline, different compute model for different workload shapes.

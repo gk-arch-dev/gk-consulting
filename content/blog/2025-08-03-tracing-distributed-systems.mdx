@@ -1,0 +1,32 @@
+---
+title: "Build Distributed Tracing on Day One, Not Day 90"
+slug: "tracing-distributed-systems"
+date: "2025-08-03"
+tags: ["practices", "architecture"]
+thesis: "An honest cost-benefit of OpenTelemetry vs AWS X-Ray, written after both choices burned me."
+description: "Why distributed tracing needs to be in from day one, and the practical trade-offs between OpenTelemetry and AWS X-Ray."
+---
+
+Distributed tracing is one of those things that every team says they'll add later and almost no team adds when they said they would. By the time you feel the pain of not having it — a bug that crosses three services, a latency spike you can't localize — you're debugging blind while stakeholders are waiting.
+
+The cost of adding tracing to an existing service is always higher than adding it at the start. Not because the instrumentation is hard, but because you have to understand the existing request paths well enough to instrument them correctly. On a new service, that understanding is in your head. On a six-month-old service, you have to re-derive it.
+
+## OpenTelemetry vs X-Ray
+
+I've used both. Here's the honest comparison.
+
+**AWS X-Ray** is the path of least resistance on AWS. The AWS SDK auto-instruments most calls. Lambda has native X-Ray support that you enable with a checkbox. The X-Ray console integrates with CloudWatch and shows service maps, trace timelines, and error rates without configuration. If your team is AWS-only and doesn't have OpenTelemetry expertise, X-Ray gets you to production faster.
+
+The downside: X-Ray uses a proprietary protocol and SDK. If you ever move off AWS or add a non-AWS component (a third-party SaaS, a cloud-provider-agnostic service), your traces fragment. The sampling model (5% default) can also miss low-frequency bugs.
+
+**OpenTelemetry** is vendor-neutral. You instrument once and export to any backend: X-Ray, Jaeger, Zipkin, Honeycomb, Datadog. The Java agent auto-instruments Spring Boot, gRPC, JDBC, and most major frameworks with a single JVM flag. If you have services across cloud providers or a mix of AWS-managed and self-managed infrastructure, OTEL is the investment that pays off.
+
+The cost: more configuration upfront. Setting up an OTEL Collector, configuring exporters, and getting context propagation right across async boundaries (SQS, EventBridge) takes a day or two the first time. That investment is worth it if you plan to stay in the ecosystem for more than a year.
+
+## The decision
+
+AWS-native team, AWS-only infrastructure, timeline pressure → X-Ray to start, migrate to OTEL later if needed.
+
+Distributed team, multi-cloud or multi-vendor infrastructure, or any intention to use observability data in non-AWS tools → OTEL from day one.
+
+Either way: instrument on day one. The debugging you do on day 91 will cost more than the hour you save by skipping it on day one.

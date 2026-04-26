@@ -1,0 +1,171 @@
+---
+title: "Strangler Fig in Practice: Lessons from a Real Migration"
+slug: "strangler-fig-in-practice"
+date: "2026-03-18"
+tags: ["modernization", "architecture"]
+thesis: "Why most strangler-fig projects stall at 60% — and how to plan around it from day one."
+description: "A field report from an 18-month PHP-to-AWS migration. Why the strangler fig pattern stalls and how to plan around it from day one."
+---
+
+Most strangler-fig migrations don't fail at the start. They fail in the middle.
+The first 30% goes well — extract one bounded context, prove the pattern, ship the new service.
+Momentum builds. Stakeholders relax. Then somewhere around the 60% mark, the team hits
+what I've come to call **the strangler ceiling**: a wall of accumulated
+coupling that no one budgeted for.
+
+I've watched this happen on three migrations now. The pattern is consistent enough
+that I want to write down what I've learned — both why it happens and, more usefully,
+how to plan around it from day one.
+
+## The 60 percent problem
+
+When you're carving out the first few bounded contexts, the seams between old and new
+are easy. You pick services that are *close to the edge* of the monolith — admin
+reporting, an isolated billing module, an internal tool. These have few dependencies
+flowing back into them, so the boundary you cut is mostly clean.
+
+The trouble starts when you reach the core. The domains in the middle of the monolith —
+identity, the main transactional workflow, the data model that everything else assumes —
+have **fan-in coupling that the architecture diagram never shows you**.
+Database joins, shared session state, implicit ordering assumptions, cron jobs that
+operate on tables across three "modules" simultaneously.
+
+<Note>
+Don't confuse the Strangler Fig pattern with Branch by Abstraction. They look similar
+on a whiteboard but solve different problems. Branch by Abstraction is for refactoring
+inside a service. Strangler Fig is for migrating between services. Mixing them up
+leads to whiteboards full of confidence and code full of regret.
+</Note>
+
+## Three rules I now refuse to break
+
+The lessons below are the ones I now treat as non-negotiable when scoping a strangler-fig
+engagement. They sound conservative. They are conservative — but every single one of
+them is the result of having tried the optimistic version and paid for it.
+
+### Rule 1 — Map the fan-in before you start
+
+Before any extraction, spend two weeks generating a dependency map of the monolith
+from *actual production traffic*, not the architecture diagram. Use APM data,
+slow-query logs, cron schedules. The diagram will show you a clean module hierarchy.
+The data will show you the truth.
+
+Here's a rough query I've used to start the conversation, against a typical PHP/MySQL
+slow-log table:
+
+```sql
+-- Find tables that are joined together in production
+SELECT
+  t1.table_name AS source,
+  t2.table_name AS joined_with,
+  COUNT(*) AS join_count
+FROM slow_query_log sl
+JOIN information_schema.tables t1
+  ON sl.sql_text LIKE CONCAT('%', t1.table_name, '%')
+JOIN information_schema.tables t2
+  ON sl.sql_text LIKE CONCAT('%', t2.table_name, '%')
+WHERE sl.start_time > NOW() - INTERVAL 30 DAY
+  AND t1.table_name < t2.table_name
+GROUP BY t1.table_name, t2.table_name
+ORDER BY join_count DESC
+LIMIT 50;
+```
+
+This is rough — you'll want to refine it with your real schema — but the output will
+surprise you. The tables that are joined most often are not always the ones the
+domain model says belong together. **That gap is where your migration will hurt.**
+
+### Rule 2 — Define the seam before you cut
+
+Every strangler-fig boundary is a contract. Before you extract a service, write down
+what the contract is — explicitly, in code, in a place both teams can review.
+
+For one engagement, we modeled every boundary as a Kotlin sealed class hierarchy
+representing the events crossing it:
+
+```kotlin
+// All events crossing the boundary between the legacy
+// PHP monolith and the new Lead Intake service.
+
+sealed class LeadIntakeEvent {
+    abstract val leadId: LeadId
+    abstract val occurredAt: Instant
+
+    data class LeadCaptured(
+        override val leadId: LeadId,
+        override val occurredAt: Instant,
+        val source: LeadSource,
+        val payload: LeadPayload,
+    ) : LeadIntakeEvent()
+
+    data class LeadEnriched(
+        override val leadId: LeadId,
+        override val occurredAt: Instant,
+        val matched: List<ProviderId>,
+    ) : LeadIntakeEvent()
+
+    data class LeadRejected(
+        override val leadId: LeadId,
+        override val occurredAt: Instant,
+        val reason: RejectionReason,
+    ) : LeadIntakeEvent()
+}
+```
+
+This file became the single source of truth for the boundary. The PHP side serialized
+it to JSON via SQS, the Kotlin side deserialized it. Schema changes required a
+documented PR review. *Boundaries that aren't enforced in code aren't boundaries —
+they're aspirations.*
+
+### Rule 3 — Plan the cutover before you start
+
+The cutover is the riskiest moment of the entire migration. Plan it on day one, not
+on month sixteen. Specifically:
+
+- Know which database is the source of truth at every point in time
+- Know how you'll detect divergence between old and new
+- Know how you'll roll back — not "we won't need to," *how*
+- Know what you'll tell the customer if it goes wrong
+
+For the most recent migration, we ran new and old in parallel for six weeks before
+cutover, with a continuous diffing job comparing outputs. Any divergence above 0.5%
+blocked the cutover. We caught two real bugs and one timezone issue this way that
+would otherwise have shipped to production.
+
+<Pullquote>
+Boundaries that aren't enforced in code aren't boundaries — they're aspirations.
+</Pullquote>
+
+## When not to use Strangler Fig
+
+I've focused on how to do it well, but it's worth saying when not to use it at all.
+
+If your monolith is **under 18 months old and under 50,000 lines of code**,
+you probably don't have a strangler-fig problem — you have a refactoring problem.
+Branch-by-abstraction inside the existing codebase will be faster, cheaper, and lower-risk.
+
+If your monolith is **genuinely well-tested and well-bounded**, ask yourself
+seriously what you're hoping to gain. The pattern carries real cost: two systems running
+in parallel, two deployment pipelines, double the on-call surface. If the only thing
+wrong is the language or framework choice, the answer might be "ship the next feature
+in the new stack alongside the old one" rather than a multi-year migration.
+
+<TradeOff>
+The strangler fig pattern shines for **monoliths that are organisationally
+impossible to freeze**. Its cost is real engineering complexity. Pick it when
+the alternative is worse, not because the pattern is fashionable.
+</TradeOff>
+
+---
+
+## Closing thought
+
+The strangler fig pattern is one of the most useful migration patterns we have. It's
+also one of the most over-applied. Most teams reach for it because it's the pattern
+they've heard of, not because it's the pattern their problem deserves.
+
+If you're considering one — map the fan-in, define the seams in code, plan the cutover
+on day one. The pattern won't save you from a bad architecture. But it will let you
+replace one carefully, while shipping features the entire time.
+
+That's the version that works. I've never seen another version that does.
