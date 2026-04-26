@@ -6,6 +6,7 @@ import '@/styles/tokens.css'
 import '@/styles/globals.css'
 import '@/styles/utilities.css'
 import '@/styles/components.css'
+import '@/styles/sections.css'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,7 +53,7 @@ export default function RootLayout({
       </head>
       <body>
         <Nav />
-        <main>{children}</main>
+        {children}
         <Footer />
       </body>
     </html>

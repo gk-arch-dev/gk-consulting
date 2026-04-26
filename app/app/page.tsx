@@ -1,20 +1,28 @@
 import type { Metadata } from 'next'
+import Hero from '@/components/sections/Hero'
+import About from '@/components/sections/About'
+import Services from '@/components/sections/Services'
+import CaseStudies from '@/components/sections/CaseStudies'
+import BlogPreview from '@/components/sections/BlogPreview'
+import Contact from '@/components/sections/Contact'
+import Reveals from '@/components/Reveals'
 
 export const metadata: Metadata = {
   title: 'GK Consulting — Java & AWS Architect for European Companies',
   description:
-    'Java & AWS architect helping European engineering leaders design, build, and modernize backend systems on AWS.',
+    'Java & AWS architect helping European engineering leaders design, build, and modernize backend systems on AWS. Solutions Architect Professional. Based in EU.',
 }
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <div style={{ paddingTop: '140px' }}>
-      <div className="spine">
-        <h1>GK Consulting — Homepage</h1>
-        <p style={{ color: 'var(--ink-muted)', marginTop: '16px' }}>
-          Step 04 will build this out.
-        </p>
-      </div>
-    </div>
+    <main>
+      <Reveals />
+      <Hero />
+      <About />
+      <Services />
+      <CaseStudies />
+      <BlogPreview />
+      <Contact />
+    </main>
   )
 }
