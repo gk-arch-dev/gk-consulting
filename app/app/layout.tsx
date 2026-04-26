@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
+import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 import '@/styles/tokens.css'
 import '@/styles/globals.css'
 import '@/styles/utilities.css'
+import '@/styles/components.css'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,7 +50,11 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <Nav />
+        <main>{children}</main>
+        <Footer />
+      </body>
     </html>
   )
 }
