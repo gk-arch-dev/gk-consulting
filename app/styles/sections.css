@@ -931,6 +931,39 @@ main > .section:first-of-type {
   color: var(--accent);
   border-bottom-color: var(--accent);
 }
+.form-input--error,
+.form-textarea.form-input--error {
+  border-color: var(--accent);
+}
+.form-field-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.form-global-error {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--accent);
+  line-height: 1.5;
+}
+.form-global-error a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.contact-success {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  padding: 32px 0;
+}
 
 /* ============================================
    RESPONSIVE — 1180px (spec block only)
