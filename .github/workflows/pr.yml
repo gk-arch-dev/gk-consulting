@@ -1,0 +1,59 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-typecheck:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - run: cd app && npm ci
+      - run: cd app && npm run lint
+      - run: cd app && npx tsc --noEmit
+
+  build:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - run: cd app && npm ci
+      - run: cd app && npm run build
+
+  infra-synth:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - run: cd infra && npm ci
+      - run: cd infra && npx cdk synth --all
+
+  backend-tests:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - run: cd backend && pip install -r requirements-dev.txt
+      - run: cd backend && python -m pytest --cov=handler
