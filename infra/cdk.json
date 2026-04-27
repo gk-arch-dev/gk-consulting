@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/infra.ts",
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
   "watch": {
     "include": [
       "**"
@@ -17,6 +17,14 @@
     ]
   },
   "context": {
+    "domainName": "gk-consulting.eu",
+    "apiSubdomain": "api",
+    "hostedZoneId": "Z0123456789EXAMPLE",
+    "sesFromAddress": "noreply@gk-consulting.eu",
+    "sesToAddress": "hello@gk-consulting.eu",
+    "githubOrg": "PLACEHOLDER_ORG",
+    "githubRepo": "gk-consulting",
+    "allowedCountries": ["DE","AT","CH","NL","BE","FR","IT","ES","PL","GB","IE","US","CA","AU","NZ"],
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,
     "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": true,
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
