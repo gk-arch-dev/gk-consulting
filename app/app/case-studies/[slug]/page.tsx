@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import { getAllCaseStudies, getCaseStudy } from '@/lib/content'
+import JsonLd from '@/components/JsonLd'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
 
 export async function generateStaticParams() {
   return getAllCaseStudies().map((c) => ({ slug: c.slug }))
@@ -18,8 +21,15 @@ export async function generateMetadata({
   const cs = getCaseStudy(slug)
   if (!cs) return {}
   return {
-    title: `${cs.title} — GK Consulting`,
+    title: cs.title,
     description: cs.description,
+    alternates: { canonical: `/case-studies/${slug}/` },
+    openGraph: {
+      type: 'article',
+      url: `/case-studies/${slug}/`,
+      title: cs.title,
+      description: cs.description,
+    },
   }
 }
 
@@ -32,8 +42,29 @@ export default async function CaseStudyPage({
   const cs = getCaseStudy(slug)
   if (!cs) notFound()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: cs.title,
+    description: cs.description,
+    articleSection: 'Case Study',
+    author: {
+      '@type': 'Person',
+      name: 'Grzegorz Karolak',
+      url: `${SITE_URL}/#person`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'GK Consulting',
+      url: SITE_URL,
+    },
+    datePublished: `${cs.year}-01-01`,
+    url: `${SITE_URL}/case-studies/${cs.slug}/`,
+  }
+
   return (
     <main>
+      <JsonLd data={jsonLd} />
       <div className="spine breadcrumb">
         <div className="breadcrumb-inner">
           <Link href="/">GK Consulting</Link>

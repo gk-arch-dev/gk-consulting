@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
@@ -32,10 +32,37 @@ const jetbrainsMono = JetBrains_Mono({
 
 const themeInitScript = `(function(){try{var t=localStorage.getItem('gk-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+const DESCRIPTION =
+  'Java & AWS architect helping European engineering leaders design, build, and modernize backend systems on AWS. Solutions Architect Professional. Based in EU.'
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f5f2eb' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a1020' },
+  ],
+}
+
 export const metadata: Metadata = {
-  title: 'GK Consulting — Java & AWS Architect for European Companies',
-  description:
-    'Java & AWS architect helping European engineering leaders design, build, and modernize backend systems on AWS.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'GK Consulting — Java & AWS Architect for European Companies',
+    template: '%s · GK Consulting',
+  },
+  description: DESCRIPTION,
+  authors: [{ name: 'Grzegorz Karolak' }],
+  creator: 'Grzegorz Karolak',
+  robots: { index: true, follow: true, googleBot: { 'max-image-preview': 'large' } },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'GK Consulting',
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    description: DESCRIPTION,
+  },
 }
 
 export default function RootLayout({

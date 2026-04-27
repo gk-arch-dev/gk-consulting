@@ -4,9 +4,11 @@ import { getAllBlogPosts, getAllTags } from '@/lib/content'
 import BlogArchive from '@/components/blog/BlogArchive'
 
 export const metadata: Metadata = {
-  title: 'Blog — Notes from the field · GK Consulting',
+  title: 'Blog',
   description:
     'Architecture decisions, AWS deep dives, and engineering patterns from production. Independent Java & AWS architecture consulting from the EU.',
+  alternates: { canonical: '/blog/' },
+  openGraph: { url: '/blog/' },
 }
 
 export default function BlogPage() {

@@ -9,6 +9,9 @@ import { getAllBlogPosts, getBlogPost, TAG_DISPLAY } from '@/lib/content'
 import { extractToc } from '@/lib/toc'
 import { mdxComponents } from '@/components/mdx'
 import TocSidebar from '@/components/blog/TocSidebar'
+import JsonLd from '@/components/JsonLd'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
 
 export async function generateStaticParams() {
   return getAllBlogPosts().map((post) => ({ slug: post.slug }))
@@ -23,8 +26,19 @@ export async function generateMetadata({
   const post = getBlogPost(slug)
   if (!post) return {}
   return {
-    title: `${post.title} — GK Consulting`,
+    title: post.title,
     description: post.description,
+    alternates: { canonical: `/blog/${slug}/` },
+    openGraph: {
+      type: 'article',
+      url: `/blog/${slug}/`,
+      title: post.title,
+      description: post.description,
+      publishedTime: post.date,
+      authors: ['Grzegorz Karolak'],
+      tags: post.tags,
+    },
+    twitter: { title: post.title, description: post.description },
   }
 }
 
@@ -53,8 +67,30 @@ export default async function BlogPostPage({
   const toc = extractToc(post.content)
   const primaryTag = post.tags[0] ? (TAG_DISPLAY[post.tags[0]] ?? post.tags[0]) : undefined
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: post.title,
+    description: post.description,
+    author: {
+      '@type': 'Person',
+      name: 'Grzegorz Karolak',
+      url: `${SITE_URL}/#person`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'GK Consulting',
+      url: SITE_URL,
+    },
+    datePublished: post.date,
+    dateModified: post.date,
+    url: `${SITE_URL}/blog/${post.slug}/`,
+    keywords: post.tags.join(', '),
+  }
+
   return (
     <div className="article-grid">
+      <JsonLd data={jsonLd} />
       <article className="article">
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <Link href="/">GK Consulting</Link>

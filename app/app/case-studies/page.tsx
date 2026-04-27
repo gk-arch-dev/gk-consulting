@@ -4,9 +4,11 @@ import { getAllCaseStudies } from '@/lib/content'
 import CaseStudiesArchive from '@/components/blog/CaseStudiesArchive'
 
 export const metadata: Metadata = {
-  title: 'Case Studies · GK Consulting',
+  title: 'Case Studies',
   description:
     'Independent consulting engagements across fintech, real estate, medtech, and industrial IoT. Each one a different problem; the architectural pattern is the same.',
+  alternates: { canonical: '/case-studies/' },
+  openGraph: { url: '/case-studies/' },
 }
 
 export default function CaseStudiesPage() {
