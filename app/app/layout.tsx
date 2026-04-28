@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   authors: [{ name: 'Grzegorz Karolak' }],
   creator: 'Grzegorz Karolak',
-  robots: { index: true, follow: true, googleBot: { 'max-image-preview': 'large' } },
+  robots: { index: false, follow: false },
   openGraph: {
     type: 'website',
     locale: 'en_US',
