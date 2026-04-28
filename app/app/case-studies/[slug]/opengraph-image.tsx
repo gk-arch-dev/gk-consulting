@@ -145,7 +145,7 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
             </span>
           </div>
           <span style={{ fontFamily: 'Geist', fontSize: 15, color: '#6b7d8e' }}>
-            gk-consulting.eu
+            gkconsulting.cloud
           </span>
         </div>
       </div>

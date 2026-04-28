@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm'
 import { getAllCaseStudies, getCaseStudy } from '@/lib/content'
 import JsonLd from '@/components/JsonLd'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gkconsulting.cloud'
 
 export async function generateStaticParams() {
   return getAllCaseStudies().map((c) => ({ slug: c.slug }))

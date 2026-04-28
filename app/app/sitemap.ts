@@ -4,7 +4,7 @@ import { getAllBlogPosts, getAllCaseStudies } from '@/lib/content'
 export const dynamic = 'force-static'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gkconsulting.cloud'
   const now = new Date()
 
   const staticPages: MetadataRoute.Sitemap = [

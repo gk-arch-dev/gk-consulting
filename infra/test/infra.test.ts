@@ -19,8 +19,8 @@ test('CertStack synthesizes a DNS-validated ACM certificate', () => {
   })
   const template = Template.fromStack(stack)
   template.hasResourceProperties('AWS::CertificateManager::Certificate', {
-    DomainName: 'gk-consulting.eu',
-    SubjectAlternativeNames: ['www.gk-consulting.eu'],
+    DomainName: 'gkconsulting.cloud',
+    SubjectAlternativeNames: ['www.gkconsulting.cloud'],
     ValidationMethod: 'DNS',
   })
 })
@@ -59,11 +59,9 @@ test('GkConsultingStack synthesizes core resources', () => {
   template.hasResource('AWS::CloudFront::Function', {})
   template.hasResource('AWS::Lambda::Function', {})
   template.hasResource('AWS::ApiGatewayV2::Api', {})
-  template.hasResource('AWS::WAFv2::WebACL', {})
-  template.hasResource('AWS::WAFv2::WebACLAssociation', {})
+  template.hasResource('AWS::ApiGatewayV2::Stage', {})
   template.hasResource('AWS::SES::EmailIdentity', {})
   template.hasOutput('SiteBucketName', {})
   template.hasOutput('DistributionId', {})
   template.hasOutput('ApiUrl', {})
-  template.hasOutput('WebAclArn', {})
 })

@@ -12,7 +12,6 @@ import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as ses from 'aws-cdk-lib/aws-ses'
-import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 import { Construct } from 'constructs'
 import { Config } from './config'
 
@@ -179,7 +178,7 @@ function handler(event) {
     })
 
     const httpApi = new apigwv2.HttpApi(this, 'ContactApi', {
-      defaultDomainMapping: { domainName: apiDomainName },
+      createDefaultStage: false,
     })
 
     const lambdaIntegration = new apigwv2Integrations.HttpLambdaIntegration(
@@ -191,6 +190,14 @@ function handler(event) {
       path: '/contact',
       methods: [apigwv2.HttpMethod.POST, apigwv2.HttpMethod.OPTIONS],
       integration: lambdaIntegration,
+    })
+
+    new apigwv2.HttpStage(this, 'ApiProdStage', {
+      httpApi,
+      stageName: 'prod',
+      autoDeploy: true,
+      domainMapping: { domainName: apiDomainName },
+      throttle: { rateLimit: 10, burstLimit: 20 },
     })
 
     // ── Route 53: API alias ───────────────────────────────────────
@@ -210,118 +217,6 @@ function handler(event) {
       identity: ses.Identity.publicHostedZone(hostedZone),
     })
 
-    // ── WAF WebACL (REGIONAL, associated with API Gateway) ────────
-    const wafRules: wafv2.CfnWebACL.RuleProperty[] = [
-      {
-        name: 'AWSManagedRulesAmazonIpReputationList',
-        priority: 1,
-        overrideAction: { none: {} },
-        statement: {
-          managedRuleGroupStatement: {
-            vendorName: 'AWS',
-            name: 'AWSManagedRulesAmazonIpReputationList',
-          },
-        },
-        visibilityConfig: {
-          cloudWatchMetricsEnabled: true,
-          metricName: 'IpReputationList',
-          sampledRequestsEnabled: true,
-        },
-      },
-      {
-        name: 'AWSManagedRulesKnownBadInputsRuleSet',
-        priority: 2,
-        overrideAction: { none: {} },
-        statement: {
-          managedRuleGroupStatement: {
-            vendorName: 'AWS',
-            name: 'AWSManagedRulesKnownBadInputsRuleSet',
-          },
-        },
-        visibilityConfig: {
-          cloudWatchMetricsEnabled: true,
-          metricName: 'KnownBadInputs',
-          sampledRequestsEnabled: true,
-        },
-      },
-      {
-        // Initially in COUNT mode; switch overrideAction to { none: {} } after
-        // reviewing one week of sampled requests in the WAF console.
-        name: 'AWSManagedRulesCommonRuleSet',
-        priority: 3,
-        overrideAction: { count: {} },
-        statement: {
-          managedRuleGroupStatement: {
-            vendorName: 'AWS',
-            name: 'AWSManagedRulesCommonRuleSet',
-          },
-        },
-        visibilityConfig: {
-          cloudWatchMetricsEnabled: true,
-          metricName: 'CommonRuleSet',
-          sampledRequestsEnabled: true,
-        },
-      },
-      {
-        name: 'RateLimit',
-        priority: 4,
-        action: { block: {} },
-        statement: {
-          rateBasedStatement: {
-            limit: 100,
-            aggregateKeyType: 'IP',
-          },
-        },
-        visibilityConfig: {
-          cloudWatchMetricsEnabled: true,
-          metricName: 'RateLimit',
-          sampledRequestsEnabled: true,
-        },
-      },
-      {
-        // Block all countries not in the allow list.
-        // The geo list is intentionally permissive; tighten after launch.
-        name: 'GeoAllow',
-        priority: 5,
-        action: { block: {} },
-        statement: {
-          notStatement: {
-            statement: {
-              geoMatchStatement: {
-                countryCodes: config.allowedCountries,
-              },
-            },
-          },
-        },
-        visibilityConfig: {
-          cloudWatchMetricsEnabled: true,
-          metricName: 'GeoAllow',
-          sampledRequestsEnabled: true,
-        },
-      },
-    ]
-
-    const webAcl = new wafv2.CfnWebACL(this, 'WebAcl', {
-      defaultAction: { allow: {} },
-      scope: 'REGIONAL',
-      visibilityConfig: {
-        cloudWatchMetricsEnabled: true,
-        metricName: 'GkConsultingWebAcl',
-        sampledRequestsEnabled: true,
-      },
-      rules: wafRules,
-    })
-
-    // API Gateway HTTP API stage ARN for WAF association.
-    // HTTP API stage ARN format: arn:aws:apigateway:{region}::/apis/{apiId}/stages/{stageName}
-    const stageArn = `arn:${this.partition}:apigateway:${this.region}::/apis/${httpApi.apiId}/stages/${httpApi.defaultStage!.stageName}`
-
-    const wafAssociation = new wafv2.CfnWebACLAssociation(this, 'WebAclAssociation', {
-      resourceArn: stageArn,
-      webAclArn: webAcl.attrArn,
-    })
-    wafAssociation.addDependency(webAcl)
-
     // ── Stack outputs (used by GitHub Actions in CI/CD) ───────────
     new cdk.CfnOutput(this, 'SiteBucketName', {
       value: siteBucket.bucketName,
@@ -335,10 +230,5 @@ function handler(event) {
       value: `https://${config.apiSubdomain}.${config.domainName}`,
       description: 'Contact API base URL',
     })
-    new cdk.CfnOutput(this, 'WebAclArn', {
-      value: webAcl.attrArn,
-      description: 'WAF WebACL ARN',
-    })
-
   }
 }

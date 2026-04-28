@@ -13,11 +13,11 @@ export type Config = {
 
 export function getConfig(node: Node): Config {
   return {
-    domainName: node.tryGetContext('domainName') ?? 'gk-consulting.eu',
+    domainName: node.tryGetContext('domainName') ?? 'gkconsulting.cloud',
     apiSubdomain: node.tryGetContext('apiSubdomain') ?? 'api',
     hostedZoneId: node.tryGetContext('hostedZoneId') ?? 'Z0123456789EXAMPLE',
-    sesFromAddress: node.tryGetContext('sesFromAddress') ?? 'noreply@gk-consulting.eu',
-    sesToAddress: node.tryGetContext('sesToAddress') ?? 'hello@gk-consulting.eu',
+    sesFromAddress: node.tryGetContext('sesFromAddress') ?? 'noreply@gkconsulting.cloud',
+    sesToAddress: node.tryGetContext('sesToAddress') ?? 'hello@gkconsulting.cloud',
     githubOrg: node.tryGetContext('githubOrg') ?? 'PLACEHOLDER_ORG',
     githubRepo: node.tryGetContext('githubRepo') ?? 'gk-consulting',
     allowedCountries: node.tryGetContext('allowedCountries') ?? [

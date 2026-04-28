@@ -150,7 +150,7 @@ export default function OgImage() {
               letterSpacing: '0.04em',
             }}
           >
-            gk-consulting.eu
+            gkconsulting.cloud
           </span>
         </div>
       </div>

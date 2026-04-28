@@ -11,7 +11,7 @@ import { mdxComponents } from '@/components/mdx'
 import TocSidebar from '@/components/blog/TocSidebar'
 import JsonLd from '@/components/JsonLd'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gkconsulting.cloud'
 
 export async function generateStaticParams() {
   return getAllBlogPosts().map((post) => ({ slug: post.slug }))

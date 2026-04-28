@@ -17,12 +17,12 @@
     ]
   },
   "context": {
-    "domainName": "gk-consulting.eu",
+    "domainName": "gkconsulting.cloud",
     "apiSubdomain": "api",
-    "hostedZoneId": "Z0123456789EXAMPLE",
-    "sesFromAddress": "noreply@gk-consulting.eu",
-    "sesToAddress": "hello@gk-consulting.eu",
-    "githubOrg": "PLACEHOLDER_ORG",
+    "hostedZoneId": "Z0817245JEHB7FV1LOHH",
+    "sesFromAddress": "noreply@gkconsulting.cloud",
+    "sesToAddress": "hello@gkconsulting.cloud",
+    "githubOrg": "gk-arch-dev",
     "githubRepo": "gk-consulting",
     "allowedCountries": ["DE","AT","CH","NL","BE","FR","IT","ES","PL","GB","IE","US","CA","AU","NZ"],
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,

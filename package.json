@@ -4,6 +4,7 @@
     "build": "npm --prefix app run build",
     "test:backend": "cd backend && python -m pytest",
     "synth": "npm --prefix infra run synth",
-    "deploy": "npm --prefix infra run deploy"
+    "deploy": "npm --prefix infra run deploy",
+    "setup-github": "bash scripts/setup-github-secrets.sh"
   }
 }

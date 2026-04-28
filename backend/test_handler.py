@@ -41,11 +41,11 @@ def _ses_verified(ses_client: object, email: str) -> None:
 @mock_aws
 def test_happy_path():
     ses = boto3.client('ses', region_name='eu-central-1')
-    _ses_verified(ses, 'noreply@gk-consulting.eu')
-    _ses_verified(ses, 'hello@gk-consulting.eu')
+    _ses_verified(ses, 'noreply@gkconsulting.cloud')
+    _ses_verified(ses, 'hello@gkconsulting.cloud')
 
-    os.environ['SES_FROM'] = 'noreply@gk-consulting.eu'
-    os.environ['SES_TO'] = 'hello@gk-consulting.eu'
+    os.environ['SES_FROM'] = 'noreply@gkconsulting.cloud'
+    os.environ['SES_TO'] = 'hello@gkconsulting.cloud'
     os.environ.pop('AWS_REGION', None)
 
     result = handler(_event(), None)
@@ -61,11 +61,11 @@ def test_happy_path():
 @mock_aws
 def test_happy_path_no_company():
     ses = boto3.client('ses', region_name='eu-central-1')
-    _ses_verified(ses, 'noreply@gk-consulting.eu')
-    _ses_verified(ses, 'hello@gk-consulting.eu')
+    _ses_verified(ses, 'noreply@gkconsulting.cloud')
+    _ses_verified(ses, 'hello@gkconsulting.cloud')
 
-    os.environ['SES_FROM'] = 'noreply@gk-consulting.eu'
-    os.environ['SES_TO'] = 'hello@gk-consulting.eu'
+    os.environ['SES_FROM'] = 'noreply@gkconsulting.cloud'
+    os.environ['SES_TO'] = 'hello@gkconsulting.cloud'
 
     body = {**VALID_BODY, 'company': ''}
     result = handler(_event(body), None)
@@ -139,8 +139,8 @@ def test_invalid_json_body():
 @mock_aws
 def test_ses_error_returns_500(caplog):
     # SES identity not verified → ClientError → 500
-    os.environ['SES_FROM'] = 'noreply@gk-consulting.eu'
-    os.environ['SES_TO'] = 'hello@gk-consulting.eu'
+    os.environ['SES_FROM'] = 'noreply@gkconsulting.cloud'
+    os.environ['SES_TO'] = 'hello@gkconsulting.cloud'
 
     import logging
     with caplog.at_level(logging.ERROR, logger='handler'):

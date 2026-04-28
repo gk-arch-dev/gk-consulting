@@ -204,7 +204,7 @@ export default function Contact() {
                 {status === 'error' && (
                   <p className="form-global-error">
                     Something went wrong. Please email me directly at{' '}
-                    <a href="mailto:hello@gk-consulting.eu">hello@gk-consulting.eu</a>.
+                    <a href="mailto:hello@gkconsulting.cloud">hello@gkconsulting.cloud</a>.
                   </p>
                 )}
               </form>
@@ -215,7 +215,7 @@ export default function Contact() {
             <div className="contact-details-item">
               <span className="contact-details-label">Email</span>
               <div className="contact-details-value">
-                <a href="mailto:hello@gk-consulting.eu">hello@gk-consulting.eu</a>
+                <a href="mailto:hello@gkconsulting.cloud">hello@gkconsulting.cloud</a>
               </div>
             </div>
             <div className="contact-details-item">

@@ -8,7 +8,7 @@ import Contact from '@/components/sections/Contact'
 import Reveals from '@/components/Reveals'
 import JsonLd from '@/components/JsonLd'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gkconsulting.cloud'
 
 export const metadata: Metadata = {
   title: {
@@ -36,7 +36,7 @@ const jsonLd = {
       description:
         'Java & AWS architect specializing in backend systems, cloud-native migrations, and AWS serverless architecture.',
       url: `${SITE_URL}/`,
-      email: 'hello@gk-consulting.eu',
+      email: 'hello@gkconsulting.cloud',
       worksFor: { '@id': `${SITE_URL}/#service` },
       knowsAbout: [
         'Java', 'Kotlin', 'Spring Boot',
@@ -70,7 +70,7 @@ const jsonLd = {
       description:
         'Independent consulting practice providing Java & AWS architecture, legacy modernization, and embedded tech leadership to European engineering teams.',
       url: `${SITE_URL}/`,
-      email: 'hello@gk-consulting.eu',
+      email: 'hello@gkconsulting.cloud',
       founder: { '@id': `${SITE_URL}/#person` },
       areaServed: [
         { '@type': 'Place', name: 'European Union' },

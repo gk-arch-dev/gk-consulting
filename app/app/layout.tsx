@@ -32,7 +32,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 const themeInitScript = `(function(){try{var t=localStorage.getItem('gk-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gk-consulting.eu'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gkconsulting.cloud'
 const DESCRIPTION =
   'Java & AWS architect helping European engineering leaders design, build, and modernize backend systems on AWS. Solutions Architect Professional. Based in EU.'
 
