@@ -2,7 +2,7 @@
    HERO
    ============================================ */
 .hero {
-  padding: 132px 28px 104px;
+  padding: 132px 28px 56px;
   position: relative;
   overflow: hidden;
 }
