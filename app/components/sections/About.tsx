@@ -8,10 +8,18 @@ export default function About() {
         </div>
 
         <div className="about-intro reveal">
-          <div className="portrait" aria-hidden="true">GK</div>
+          <div className="portrait">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/picture.jpg"
+              alt="Grzegorz Karolak — Java and AWS architect"
+              width={88}
+              height={104}
+            />
+          </div>
           <div>
             <div className="portrait-meta">Grzegorz Karolak</div>
-            <div className="portrait-name">Principal Architect &amp; Founder</div>
+            <div className="portrait-name">Solutions Architect &amp; Engineer</div>
             <div className="portrait-role">
               GK Consulting &middot; Poland &middot; Serving clients across Europe
             </div>
@@ -20,31 +28,42 @@ export default function About() {
 
         <div className="prose reveal">
           <p>
-            I&apos;m a <strong>Java &amp; AWS architect</strong> who has spent the last several
-            years designing and delivering production systems across fintech, medtech, real estate,
-            and industrial IoT. I hold both the AWS Solutions Architect Professional and Associate
-            certifications, but more importantly I have the scars to prove I&apos;ve used them
-            — leading legacy PHP-to-Kotlin migrations, building IoT platforms for power grid
-            operators, and shipping serverless systems that run for cents a month.
+            I&apos;m <strong>Grzegorz Karolak</strong>, a{' '}
+            <strong>Java and AWS architect</strong>{' '}and engineer, based in Poland
+            and working with clients across Europe. You work with me directly — no project manager
+            translating between you and a team in a different time zone, no junior
+            swap-out partway through. Engagements range from focused architecture reviews to multi-month
+            end-to-end builds where I write code, lead the team, and ship the system.
+            I scope to what you need, not to fill a calendar. It&apos;s the right shape when continuity of ownership
+            matters more than team size — and I&apos;ll tell you up front when it
+            isn&apos;t.
           </p>
           <p>
-            GK Consulting is a <strong>solo practice by design</strong>. You work with me
-            directly, not a project manager forwarding emails to a team in a different time zone.
-            When you engage me for architecture, I write the code. When you engage me for a
-            migration, I lead it end-to-end. When I don&apos;t know something, I tell you.
+            The proof: AWS Solutions Architect Professional and Associate
+            certifications. A PHP-to-Kotlin migration for a German real-estate
+            platform, an
+            IoT backend over gRPC and MQTT for a Swiss power-grid operator, a
+            portfolio management modernization for a Swiss financial institution, and a
+            medical-device companion platform for a UK medtech startup. Production
+            systems, not pilots.
           </p>
           <blockquote className="pullquote">
-            I don&apos;t just draw diagrams. I write code, lead teams, and deliver working
-            systems.
+            I don&apos;t just draw diagrams. I design, build, and ship working
+            systems — pragmatic, business-focused, AI in the workflow.
           </blockquote>
           <p>
-            Based in Poland, serving clients across Europe. EU-hosted infrastructure,
-            GDPR-native, and fluent in the engineering culture of mid-market DACH companies.
+            My default stack is <strong>Kotlin or Java on Spring Boot</strong>{' '}
+            for services and serverless on AWS for the edges. I&apos;m comfortable
+            across the stack, including React and TypeScript front-ends and IaC tools.
+            AI tooling like Claude Code earns its place in the workflow: faster
+            scaffolding, tighter review loops, more time on the work that needs
+            judgment. The decisions are still mine.
           </p>
         </div>
 
-        <div className="aws-badges reveal">
+        <div className="aws-badges reveal" aria-label="AWS Certifications">
           <span className="aws-badges-label">Verified Credentials</span>
+          <span className="aws-badges-meta">EU-based &middot; GDPR-aligned</span>
           <div className="aws-badges-row">
             <a
               href="https://www.credly.com/badges/d2d48f47-4b91-4a27-bcfc-668fa325bffc/public_url"
