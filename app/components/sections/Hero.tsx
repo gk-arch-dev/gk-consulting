@@ -31,11 +31,13 @@ export default function Hero() {
           I design, build, and modernize enterprise systems <em>on AWS.</em>
         </h1>
         <p className="hero-lede reveal">
-          Focused on <strong>Java and AWS</strong>, open to other stacks when
-          they&apos;re the right tool for the job. I modernize legacy monoliths
-          into production-grade platforms, or design new systems from scratch
-          when a fresh build is the better path. Pragmatic decisions, AI
-          tooling in the workflow, measured against business goals.
+          AWS-certified <strong>Solutions Architect (Professional)</strong>{' '}
+          and full-stack engineer — mostly <strong>Java</strong>, but I reach
+          for whatever fits the problem. I&apos;ve built enterprise systems for
+          established European companies across proptech, fintech, energy, and
+          medtech. I modernize
+          legacy monoliths into production-grade platforms, or design new ones
+          from scratch when a fresh build is the better path.
         </p>
         <div className="hero-ctas reveal">
           <Link

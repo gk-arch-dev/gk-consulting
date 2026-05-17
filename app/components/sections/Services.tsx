@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Services() {
   return (
     <section className="section" id="services">
@@ -6,29 +8,31 @@ export default function Services() {
           <span className="section-num">02.</span>
           <span className="section-label">Services</span>
         </div>
-        <h2 className="reveal">Three ways we work together.</h2>
+        <h2 className="reveal">How we work together.</h2>
         <p className="section-lede reveal">
-          Every engagement starts with a scoped discovery conversation. No six-stage sales
-          funnel, no signing NDAs to get a quote. Pick the shape that fits.
+          Every engagement starts with a free conversation — a call or just a
+          message — to scope the work. Tell me what you&apos;re dealing with and
+          I&apos;ll tell you straight whether I can help, and how.{' '}
+          <Link href="/#contact">Get in touch →</Link>
         </p>
 
         <div className="service reveal">
           <div className="service-num">
             <span className="service-numeral">01 /</span>
-            <span className="service-num-label">Greenfield</span>
+            <span className="service-num-label">Review</span>
           </div>
-          <h3>Architecture &amp; Design</h3>
+          <h3>AWS Architecture &amp; Cost Review</h3>
           <p>
-            You have a new product to build and you want an architecture that won&apos;t
-            need a rewrite in 18 months. I design the system end-to-end — service
-            boundaries, data model, AWS infrastructure, CI/CD — then help your team build
-            it, or build it myself.
+            You want to know whether your AWS setup is sound — cost, security,
+            architecture — and what to fix first. I run a structured review
+            against the Well-Architected framework and hand back a prioritized
+            list of findings, with the cost wins called out.
           </p>
           <div className="service-deliverables">
-            <span>Architecture decision records</span>
-            <span>AWS account structure</span>
-            <span>IaC scaffolding (CDK / Terraform)</span>
-            <span>Hands-on implementation</span>
+            <span>Well-Architected review</span>
+            <span>Prioritized findings</span>
+            <span>Cost-optimization wins</span>
+            <span>Read-out call</span>
           </div>
         </div>
 
@@ -55,20 +59,40 @@ export default function Services() {
         <div className="service reveal">
           <div className="service-num">
             <span className="service-numeral">03 /</span>
-            <span className="service-num-label">Embedded</span>
+            <span className="service-num-label">Greenfield</span>
           </div>
-          <h3>Embedded Architect / Tech Lead</h3>
+          <h3>Architecture &amp; Design</h3>
           <p>
-            You need architectural leadership for the next few months. I join your team as
-            a hands-on architect or tech lead — design reviews, code review, mentoring,
-            CI/CD, cloud infrastructure. I can lead your existing developers or assemble a
-            dedicated delivery team for you.
+            You have a new product to build and you want an architecture that won&apos;t
+            need a rewrite in 18 months. I design the system end-to-end — service
+            boundaries, data model, AWS infrastructure, CI/CD — then help your team build
+            it, or build it myself.
           </p>
           <div className="service-deliverables">
-            <span>2–6 month engagements</span>
-            <span>Weekly stand-ups, not daily</span>
-            <span>Async-first documentation</span>
-            <span>Clean handover on exit</span>
+            <span>Architecture decision records</span>
+            <span>AWS account structure</span>
+            <span>IaC scaffolding (CDK / Terraform)</span>
+            <span>Hands-on implementation</span>
+          </div>
+        </div>
+
+        <div className="service reveal">
+          <div className="service-num">
+            <span className="service-numeral">04 /</span>
+            <span className="service-num-label">Advisory</span>
+          </div>
+          <h3>Fractional Architect</h3>
+          <p>
+            You don&apos;t need a full-time architect, but you need a senior one your
+            team can check decisions against. On a light retainer, I run design and PR
+            reviews and pressure-test the big calls — a senior brain on call, without
+            the headcount.
+          </p>
+          <div className="service-deliverables">
+            <span>Monthly retainer</span>
+            <span>Design &amp; PR reviews</span>
+            <span>Architecture decision support</span>
+            <span>Async-first scheduling</span>
           </div>
         </div>
 
