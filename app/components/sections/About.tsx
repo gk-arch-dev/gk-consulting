@@ -1,3 +1,46 @@
+import type { IconType } from 'react-icons'
+import {
+  SiOpenjdk, SiKotlin, SiSpringboot, SiHibernate, SiTypescript,
+  SiReact, SiPython, SiDocker, SiTerraform, SiSpring,
+} from 'react-icons/si'
+import { FaAws } from 'react-icons/fa6'
+import {
+  LuDatabase, LuDatabaseZap, LuRefreshCw, LuCpu, LuHardDrive,
+  LuSend, LuNetwork, LuShieldCheck, LuActivity, LuBlocks,
+} from 'react-icons/lu'
+
+const STACK: { name: string; Icon: IconType }[] = [
+  { name: 'Java', Icon: SiOpenjdk },
+  { name: 'Kotlin', Icon: SiKotlin },
+  { name: 'Spring Boot', Icon: SiSpringboot },
+  { name: 'AWS', Icon: FaAws },
+  { name: 'TypeScript', Icon: SiTypescript },
+  { name: 'React', Icon: SiReact },
+  { name: 'Python', Icon: SiPython },
+  { name: 'SQL', Icon: LuDatabase },
+  { name: 'Hibernate', Icon: SiHibernate },
+  { name: 'DynamoDB', Icon: LuDatabaseZap },
+  { name: 'Docker', Icon: SiDocker },
+  { name: 'Terraform', Icon: SiTerraform },
+  { name: 'CI/CD', Icon: LuRefreshCw },
+]
+
+const AWS_CATEGORIES: { label: string; Icon: IconType; items: string[] }[] = [
+  { label: 'Compute', Icon: LuCpu, items: ['Lambda', 'EC2', 'ECS'] },
+  { label: 'Storage', Icon: LuHardDrive, items: ['S3', 'EFS', 'EBS'] },
+  { label: 'Database', Icon: LuDatabase, items: ['RDS', 'DynamoDB'] },
+  { label: 'Messaging & events', Icon: LuSend, items: ['SQS', 'SNS', 'Kinesis', 'EventBridge'] },
+  { label: 'Networking', Icon: LuNetwork, items: ['CloudFront', 'API Gateway', 'VPC', 'Route 53', 'ELB'] },
+  { label: 'Security & identity', Icon: LuShieldCheck, items: ['IAM', 'Cognito', 'Secrets Manager', 'KMS'] },
+  { label: 'Observability & ops', Icon: LuActivity, items: ['CloudWatch', 'CloudTrail', 'SSM'] },
+  { label: 'Infra as code', Icon: LuBlocks, items: ['CloudFormation', 'CDK'] },
+]
+
+const SPRING_ITEMS = [
+  'Boot', 'Cloud', 'Security', 'Data', 'JPA',
+  'MVC', 'WebFlux', 'AOP', 'Integration', 'Retry',
+]
+
 export default function About() {
   return (
     <section className="section" id="about">
@@ -86,8 +129,11 @@ export default function About() {
                 height={64}
               />
               <span className="aws-badge-text">
-                <span className="aws-badge-name">Solutions Architect</span>
-                <span className="aws-badge-issuer">Professional &middot; Amazon Web Services</span>
+                <span className="aws-badge-eyebrow">AWS Certified</span>
+                <span className="aws-badge-name-row">
+                  <span className="aws-badge-name">Solutions Architect</span>
+                  <span className="aws-badge-tier aws-badge-tier--pro">Professional</span>
+                </span>
                 <span className="aws-badge-link">Verify on Credly →</span>
               </span>
             </a>
@@ -106,11 +152,59 @@ export default function About() {
                 height={64}
               />
               <span className="aws-badge-text">
-                <span className="aws-badge-name">Solutions Architect</span>
-                <span className="aws-badge-issuer">Associate &middot; Amazon Web Services</span>
+                <span className="aws-badge-eyebrow">AWS Certified</span>
+                <span className="aws-badge-name-row">
+                  <span className="aws-badge-name">Solutions Architect</span>
+                  <span className="aws-badge-tier aws-badge-tier--assoc">Associate</span>
+                </span>
                 <span className="aws-badge-link">Verify on Credly →</span>
               </span>
             </a>
+          </div>
+        </div>
+
+        <div className="tech-strip reveal">
+          <span className="tech-strip-label">Working stack</span>
+          <div className="tech-tags">
+            {STACK.map(({ name, Icon }) => (
+              <span key={name} className="tag">
+                <Icon className="tag-icon" aria-hidden="true" />
+                {name}
+              </span>
+            ))}
+          </div>
+          <div className="depth-block">
+            <div className="depth-head">
+              <FaAws className="depth-logo" aria-hidden="true" />
+              <span className="depth-title">AWS</span>
+            </div>
+            <div className="depth-cats">
+              {AWS_CATEGORIES.map(({ label, Icon, items }) => (
+                <div key={label} className="depth-cat">
+                  <span className="depth-cat-label">
+                    <Icon className="depth-cat-icon" aria-hidden="true" />
+                    {label}
+                  </span>
+                  <div className="depth-chips">
+                    {items.map((s) => (
+                      <span key={s} className="chip">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="depth-block">
+            <div className="depth-head">
+              <SiSpring className="depth-logo" aria-hidden="true" />
+              <span className="depth-title">Spring</span>
+            </div>
+            <div className="depth-chips">
+              {SPRING_ITEMS.map((s) => (
+                <span key={s} className="chip">{s}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -95,34 +95,6 @@ export default function Services() {
             <span>Async-first scheduling</span>
           </div>
         </div>
-
-        <div className="tech-strip reveal">
-          <span className="tech-strip-label">Working stack</span>
-          <div className="tech-tags">
-            {[
-              'Java', 'Kotlin', 'Spring Boot', 'AWS', 'TypeScript',
-              'React', 'Python', 'SQL', 'DynamoDB', 'Docker', 'Terraform', 'CI/CD',
-            ].map((t) => (
-              <span key={t} className="tag">{t}</span>
-            ))}
-          </div>
-          <div className="tech-aws-line">
-            <span className="tech-aws-label">AWS depth</span>
-            <span className="tech-aws-items">
-              SQS · SNS · RDS · Lambda · S3 · CloudFront · API Gateway · EC2 · ECS · ELB
-              · VPC · Route 53 · DynamoDB · EFS · EBS · Kinesis · EventBridge ·
-              CloudFormation · CloudWatch · CloudTrail · IAM · Cognito · Secrets Manager ·
-              KMS · SSM · CDK
-            </span>
-          </div>
-          <div className="tech-aws-line">
-            <span className="tech-aws-label">Spring depth</span>
-            <span className="tech-aws-items">
-              Boot · Cloud · Security · Data · JPA · MVC · WebFlux · AOP · Integration ·
-              Retry
-            </span>
-          </div>
-        </div>
       </div>
     </section>
   )

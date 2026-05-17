@@ -336,12 +336,38 @@ main > .section:first-of-type {
   line-height: 1.2;
   transition: color 0.2s ease;
 }
-.aws-badge-issuer {
+.aws-badge-eyebrow {
   font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
-  font-size: 10px;
-  color: var(--ink-soft);
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+.aws-badge-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+.aws-badge-tier {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 3px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.aws-badge-tier--pro {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+.aws-badge-tier--assoc {
+  background: var(--mono-tag-bg);
+  color: var(--ink-soft);
 }
 .aws-badge-link {
   font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
@@ -448,6 +474,9 @@ main > .section:first-of-type {
   gap: 10px;
 }
 .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
   font-size: 12px;
   padding: 8px 14px;
@@ -457,32 +486,91 @@ main > .section:first-of-type {
   letter-spacing: 0.02em;
   transition: all 0.2s ease;
 }
+.tag-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+.tag:hover .tag-icon {
+  opacity: 1;
+}
 .tag:hover {
   background: var(--accent-soft);
   color: var(--accent);
   transform: translateY(-1px);
 }
-.tech-aws-line {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 24px;
-  align-items: baseline;
+.depth-block {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
 }
-.tech-aws-label {
-  font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
-  font-size: 10px;
+.depth-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.depth-logo {
+  width: 15px;
+  height: 15px;
   color: var(--accent);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
-.tech-aws-items {
-  font-family: var(--font-inter), -apple-system, sans-serif;
-  font-size: 13px;
-  line-height: 1.7;
+.depth-title {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.depth-cats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 24px;
+}
+.depth-cat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.depth-cat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
+  font-size: 9px;
   color: var(--ink-muted);
-  letter-spacing: 0.005em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.depth-cat-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 6px;
+}
+.depth-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.chip {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', monospace;
+  font-size: 11px;
+  padding: 3px 8px;
+  background: var(--mono-tag-bg);
+  color: var(--mono-tag-ink);
+  border-radius: 3px;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.chip:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* ============================================
@@ -1014,8 +1102,7 @@ main > .section:first-of-type {
   .aws-badges-row { flex-direction: column; align-items: stretch; gap: 12px; }
   .aws-badge { width: 100%; padding: 14px 16px 14px 14px; }
   .tag { padding: 10px 16px; font-size: 13px; }
-  .tech-aws-line { grid-template-columns: 1fr; gap: 6px; }
-  .tech-aws-items { font-size: 13px; line-height: 1.8; }
+  .depth-cats { grid-template-columns: repeat(2, 1fr); gap: 14px 16px; }
   .service { padding: 24px 0 24px 18px; }
   .case { padding: 28px 16px; margin: 0 -16px; }
   .case-meta { grid-template-columns: 1fr; gap: 12px; }
